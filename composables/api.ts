@@ -3,7 +3,7 @@ import { defu } from 'defu'
 
 export async function useApi<T> (url: string, options: UseFetchOptions<T> = {}) {
   const userAuth = useCookie('access_token')
-  const baseURL = (process.env.APP_DEBUG === 'true' && process.client) ? '/api' : `${process.env.API_BASE_URL}/api`
+  const baseURL = process.client ? '/api' : `${process.env.API_BASE_URL}/api`
   const headers: {[key: string]: string} = {
     Accept: 'application/json'
   }
