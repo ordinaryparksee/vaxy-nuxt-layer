@@ -3,16 +3,21 @@ import { defu } from 'defu'
 
 export async function useApi<T> (url: string, options: UseFetchOptions<T> = {}) {
     const userAuth = useCookie('access_token')
+    const headers: {[key: string]: string} = {
+      Accept: 'application/json'
+    }
+
+    if (userAuth.value) {
+      headers.Authorization = `Bearer ${userAuth.value}`
+    }
 
     const defaults: UseFetchOptions<T> = {
-        baseURL: process.client ? '/api' : `${process.env.API_BASE_URL}/api`,
+        baseURL: (process.env.APP_ENV === 'local' && process.client) ? '/api' : `${process.env.API_BASE_URL}/api`,
         // cache request
         key: url,
 
         // set user token if connected
-        headers: userAuth.value
-            ? { Authorization: `Bearer ${userAuth.value}` }
-            : {},
+        headers: headers,
 
         onResponse (_ctx) {
             // _ctx.response._data = new myBusinessResponse(_ctx.response._data)
