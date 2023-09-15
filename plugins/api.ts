@@ -1,6 +1,7 @@
 export default defineNuxtPlugin(async () => {
   const runtimeConfig = useRuntimeConfig()
   const userAuth = useCookie('access_token')
+  const baseURL = (process.env.APP_DEBUG === 'true' && process.client) ? '/api' : `${process.env.API_BASE_URL}/api`
   const headers: {[key: string]: string} = {
     Accept: 'application/json'
   }
@@ -10,7 +11,7 @@ export default defineNuxtPlugin(async () => {
   }
 
   const instance = $fetch.create({
-    baseURL: (process.env.APP_ENV === 'local' && process.client) ? '/api' : `${process.env.API_BASE_URL}/api`,
+    baseURL: baseURL,
     headers: {
       Accept: 'application/json'
     }
