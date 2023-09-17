@@ -1,7 +1,10 @@
+import { ExclamationTriangleIcon  } from '@heroicons/vue/24/outline'
+
 export interface DialogMessage<T> {
   component: 'alert'|'confirm',
   title: string,
   message: string,
+  level: 'success'|'info'|'warning'|'danger',
   resolve?: (value: T | PromiseLike<T>) => void,
   reject?: (reason?: any) => void
 }
@@ -29,26 +32,33 @@ export default defineNuxtPlugin(() => {
       stack.value.pop()
     })
   }
+  const defaults: {[key: string]: any} = {
+    level: 'info'
+  }
   const alertDialog = async (message: string | AlertDialogMessage) => {
+    const options = {
+      ...defaults,
+      title: 'Alert',
+      component: 'alert',
+      message: message
+    } as DialogMessage<any>
     if (typeof message === 'string') {
-      return create({
-        component: 'alert',
-        title: 'Alert',
-        message: message
-      })
+      return create(options)
     } else {
-      return create(message)
+      return create(Object.assign(options, message))
     }
   }
   const confirmDialog = async (message: string | ConfirmDialogMessage) => {
+    const options = {
+      ...defaults,
+      title: 'Confirmation',
+      component: 'confirm',
+      message: message
+    } as DialogMessage<any>
     if (typeof message === 'string') {
-      return create({
-        component: 'confirm',
-        title: 'Confirm',
-        message: message
-      })
+      return create(options)
     } else {
-      return create(message)
+      return create(Object.assign(options, message))
     }
   }
   return {
