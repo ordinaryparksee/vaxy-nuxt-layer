@@ -1,3 +1,3 @@
 <template>
-  <HelloWorld />
+  <div>vaxy-nuxt-layer</div>
 </template>
