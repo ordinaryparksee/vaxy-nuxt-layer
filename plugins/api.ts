@@ -12,9 +12,7 @@ export default defineNuxtPlugin(async () => {
 
   const instance = $fetch.create({
     baseURL: baseURL,
-    headers: {
-      Accept: 'application/json'
-    }
+    headers: headers
   })
 
   // You can also just do this instead of returning
