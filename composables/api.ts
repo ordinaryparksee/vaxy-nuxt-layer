@@ -34,8 +34,3 @@ export async function useApi<T> (url: string, options: UseFetchOptions<T> = {}) 
 
   return useFetch(url, params)
 }
-
-export async function useApiData<T> (url: string, options: UseFetchOptions<T> = {}) {
-  const response = await useApi(url, options)
-  return response.data.value
-}
