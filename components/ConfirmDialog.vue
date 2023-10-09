@@ -12,7 +12,7 @@ const props = defineProps<{
   icon: any,
   title: string,
   message: string,
-  resolve?: (value: boolean | PromiseLike<boolean>) => void,
+  resolve?: (value: boolean | PromiseLike<boolean>) => boolean,
   reject?: (reason?: boolean) => void
 }>()
 const color = {
@@ -64,19 +64,19 @@ function resolve(value: boolean) {
               </div>
               <div class="mt-5 sm:mt-4 sm:flex sm:gap-1 sm:flex-row-reverse">
                 <button
-                  v-if="level === 'success'" v-on:click="resolve" type="button"
+                  v-if="level === 'success'" v-on:click="resolve(true)" type="button"
                   class="bg-green-700 hover:bg-green-600 focus-visible:outline-green-700 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-auto"
                 >Yes</button>
                 <button
-                  v-else-if="level === 'warning'" v-on:click="resolve" type="button"
+                  v-else-if="level === 'warning'" v-on:click="resolve(true)" type="button"
                   class="bg-yellow-600 hover:bg-yellow-500 focus-visible:outline-yellow-600 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-auto"
                 >Yes</button>
                 <button
-                  v-else-if="level === 'danger'" v-on:click="resolve" type="button"
+                  v-else-if="level === 'danger'" v-on:click="resolve(true)" type="button"
                   class="bg-red-600 hover:bg-red-500 focus-visible:outline-red-600 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-auto"
                 >Yes</button>
                 <button
-                  v-else v-on:click="resolve" type="button"
+                  v-else v-on:click="resolve(true)" type="button"
                   class="bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-auto"
                 >Yes</button>
                 <button

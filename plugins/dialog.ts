@@ -5,7 +5,7 @@ export interface DialogMessage<T> {
   title: string,
   message: string,
   level: 'success'|'info'|'warning'|'danger',
-  resolve?: (value: T | PromiseLike<T>) => void,
+  resolve?: (value: T | PromiseLike<T>) => T,
   reject?: (reason?: any) => void
 }
 export interface AlertDialogMessage extends DialogMessage<boolean> {
@@ -22,15 +22,17 @@ export interface DialogPlugin {
 
 export default defineNuxtPlugin(() => {
   const stack = ref<DialogMessage<any>[]>([])
-  const create = async (options: DialogMessage<any>) => {
-    return new Promise<null>((resolve, reject) => {
+  const create = async <T> (options: DialogMessage<T>) => {
+    const promise: Promise<T> = new Promise((resolve, reject) => {
       stack.value.push(Object.assign(options, {
         resolve: resolve,
         reject: reject
       }))
-    }).then(() => {
+    })
+    promise.then(() => {
       stack.value.pop()
     })
+    return promise
   }
   const defaults: {[key: string]: any} = {
     level: 'info'
@@ -54,11 +56,11 @@ export default defineNuxtPlugin(() => {
       title: 'Confirmation',
       component: 'confirm',
       message: message
-    } as DialogMessage<any>
+    } as DialogMessage<boolean>
     if (typeof message === 'string') {
-      return create(options)
+      return create<boolean>(options)
     } else {
-      return create(Object.assign(options, message))
+      return create<boolean>(Object.assign(options, message))
     }
   }
   return {
