@@ -1,6 +1,5 @@
 export default defineNuxtPlugin(async () => {
   const runtimeConfig = useRuntimeConfig()
-  const { $dialog } = useNuxtApp()
   const userAuth = useCookie('access_token')
   const baseURL = process.client ? '/api' : `${process.env.API_BASE_URL}/api`
   const headers: {[key: string]: string} = {
@@ -13,12 +12,7 @@ export default defineNuxtPlugin(async () => {
 
   const instance = $fetch.create({
     baseURL: baseURL,
-    headers: headers,
-    async onResponseError({ request, response, options, error }) {
-      if (response.status === 500) {
-        await $dialog.alert('에러가 발생했습니다.')
-      }
-    }
+    headers: headers
   })
 
   // You can also just do this instead of returning
