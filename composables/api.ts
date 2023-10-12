@@ -1,7 +1,6 @@
-import type { AsyncData, FetchResult, UseFetchOptions } from 'nuxt/app'
+import type { AsyncData, UseFetchOptions } from 'nuxt/app'
 import { defu } from 'defu'
 import { FetchError } from 'ofetch'
-import { AvailableRouterMethod, NitroFetchRequest } from 'nitropack'
 import { KeysOf, PickFrom } from '#app/composables/asyncData'
 
 export async function useApi<
