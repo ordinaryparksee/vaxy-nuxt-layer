@@ -1,32 +1,30 @@
 <script setup lang="ts">
+import { theme } from '#tailwind-config'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { CheckIcon, InformationCircleIcon, ExclamationTriangleIcon, ExclamationCircleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
-  level: string,
   title: string,
   message: string,
-  resolve?: (value: boolean | PromiseLike<boolean>) => void,
-  reject?: (reason?: any) => void
+  level?: string
 }>()
-const color = {
-  success: 'green',
-  info: 'indigo',
-  warning: 'yellow',
-  danger: 'red'
-}
+
+const emits = defineEmits(['show', 'hide', 'resolve', 'reject'])
+
 const isOpen = ref(true)
 
 function resolve() {
   isOpen.value = false
-  if (props.resolve) {
-    props.resolve(true)
-  }
+}
+
+function afterResolve () {
+  emits('hide')
+  emits('resolve', true)
 }
 </script>
 
 <template>
-  <TransitionRoot as="template" v-bind:show="isOpen">
+  <TransitionRoot as="template" v-bind:show="isOpen" v-on:after-leave="afterResolve">
     <Dialog as="div" class="relative z-10">
       <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
@@ -46,14 +44,24 @@ function resolve() {
                 <div v-else-if="level === 'danger'" class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
                   <ExclamationCircleIcon class="text-red-600 h-6 w-6" aria-hidden="true" />
                 </div>
-                <div v-else class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100">
-                  <InformationCircleIcon class="text-indigo-600 h-6 w-6" aria-hidden="true" />
+                <div
+                  v-else-if="level === 'info'"
+                  v-bind:class="[theme?.extend?.colors?.primary ? 'bg-primary-100' : 'bg-indigo-100']"
+                  class="mx-auto flex h-12 w-12 items-center justify-center rounded-full"
+                >
+                  <InformationCircleIcon
+                    v-bind:class="[theme?.extend?.colors?.primary ? 'text-primary-600' : 'text-indigo-600']"
+                    class="h-6 w-6" aria-hidden="true"
+                  />
                 </div>
-                <div class="mt-3 text-center sm:mt-5">
-                  <DialogTitle as="h3" class="text-base font-semibold leading-6 text-gray-900">{{ props.title }}</DialogTitle>
-                  <div class="mt-2">
-                    <p class="text-sm text-gray-500">{{ props.message  }}</p>
-                  </div>
+                <div v-else>
+                  <slot name="header"/>
+                </div>
+              </div>
+              <div class="mt-3 text-center sm:mt-5">
+                <DialogTitle as="h3" class="text-base font-semibold leading-6 text-gray-900">{{ props.title }}</DialogTitle>
+                <div class="mt-2">
+                  <p class="text-sm text-gray-500">{{ props.message }}</p>
                 </div>
               </div>
               <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
@@ -70,8 +78,11 @@ function resolve() {
                   class="bg-red-600 hover:bg-red-500 focus-visible:outline-red-600 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-auto"
                 >Yes</button>
                 <button
-                  v-else v-on:click="resolve" type="button"
-                  class="bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-auto"
+                  v-else
+                  v-on:click="resolve"
+                  v-bind:class="[theme?.extend?.colors?.primary ? 'bg-primary-600 hover:bg-primary-500 focus-visible:outline-primary-600' : 'bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600']"
+                  type="button"
+                  class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-auto"
                 >Yes</button>
               </div>
             </DialogPanel>
